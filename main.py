@@ -48,17 +48,20 @@ def app():
     st.title('PDF/Word to LaTeX Converter')
 
     # File upload widget
-    file_path = st.text_input('Enter the file path of a PDF or DOCX file:')
-    file_type = file_path.split('.')[-1].lower()
+    file = st.file_uploader('Upload a PDF or DOCX file:', type=['pdf', 'docx'])
 
     # Convert file on button press
     if st.button('Convert'):
-        if file_path:
+        if file is not None:
+            # Get file contents
+            file_contents = io.BytesIO(file.read())
+
             # Extract text from file
+            file_type = file.name.split('.')[-1].lower()
             if file_type == 'pdf':
-                text = extract_pdf(file_path)
+                text = extract_pdf(file_contents)
             elif file_type == 'docx':
-                text = extract_docx(file_path)
+                text = extract_docx(file_contents)
             else:
                 st.error('Unsupported file type. Please upload a PDF or DOCX file.')
 
@@ -68,7 +71,7 @@ def app():
             # Display LaTeX code
             st.code(latex, language='latex')
         else:
-            st.error('Please enter a file path.')
+            st.error('Please upload a file.')
 
 if __name__ == '__main__':
     app()
