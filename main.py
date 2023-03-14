@@ -67,10 +67,16 @@ def app():
             # Convert text to LaTeX format
             latex = to_latex(text)
 
-            # Display LaTeX code
+             # Display LaTeX code
             st.code(latex, language='latex')
+
+            # Export LaTeX file
+            download_button_str = 'Download LaTeX file'
+            b64 = io.BytesIO(latex.encode())
+            st.download_button(download_button_str, b64, f'{file.name.split(".")[0]}.tex', 'text/plain')
         else:
             st.error('Please upload a file.')
+            
 
 if __name__ == '__main__':
     app()
