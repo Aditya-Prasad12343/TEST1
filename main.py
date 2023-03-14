@@ -4,17 +4,16 @@ import docx
 import io
 
 # Function to extract text from a PDF file
-def extract_pdf(file_path):
-    with open(file_path, 'rb') as file:
-        reader = PyPDF2.PdfFileReader(file)
-        text = ''
-        for page in reader.pages:
-            text += page.extract_text()
-        return text
+def extract_pdf(file):
+    reader = PyPDF2.PdfFileReader(file)
+    text = ''
+    for page in reader.pages:
+        text += page.extract_text()
+    return text
 
 # Function to extract text from a Word document
-def extract_docx(file_path):
-    doc = docx.Document(file_path)
+def extract_docx(file):
+    doc = docx.Document(file)
     text = ''
     for paragraph in doc.paragraphs:
         text += paragraph.text + '\n'
@@ -54,14 +53,14 @@ def app():
     if st.button('Convert'):
         if file is not None:
             # Get file contents
-            file_contents = io.BytesIO(file.read())
+            file_contents = file.read()
 
             # Extract text from file
             file_type = file.name.split('.')[-1].lower()
             if file_type == 'pdf':
-                text = extract_pdf(file_contents)
+                text = extract_pdf(io.BytesIO(file_contents))
             elif file_type == 'docx':
-                text = extract_docx(file_contents)
+                text = extract_docx(io.BytesIO(file_contents))
             else:
                 st.error('Unsupported file type. Please upload a PDF or DOCX file.')
 
