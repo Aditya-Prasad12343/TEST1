@@ -5,7 +5,7 @@ import io
 
 # Function to extract text from a PDF file
 def extract_pdf(file):
-    reader = PyPDF2.PdfFileReader(file)
+    reader = PyPDF2.PdfReader(file)
     text = ''
     for page in reader.pages:
         text += page.extract_text()
