@@ -1,6 +1,7 @@
 import streamlit as st
 import PyPDF2
-import docx2txt
+import docx
+import io
 
 # Function to extract text from a PDF file
 def extract_pdf(file_path):
@@ -13,7 +14,11 @@ def extract_pdf(file_path):
 
 # Function to extract text from a Word document
 def extract_docx(file_path):
-    return docx2txt.process(file_path)
+    doc = docx.Document(file_path)
+    text = ''
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + '\n'
+    return text
 
 # Function to convert the extracted text to LaTeX format
 def to_latex(text):
