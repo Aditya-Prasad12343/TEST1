@@ -52,6 +52,9 @@ volume_conversion_factors = {
     "cubic yard": 764554.858,
 }
 
+# Set page title and center everything
+st.set_page_config(page_title="Unit Converter", layout="centered")
+
 # Display the conversion options and allow the user to select a conversion type
 conversion_type = st.sidebar.selectbox("Select a conversion type", ["length", "area", "mass", "volume"])
 
@@ -75,5 +78,6 @@ if input_value:
     # Perform the conversion
     output_value = input_value * (conversion_factors[input_unit] / conversion_factors[output_unit])
 
-    # Display the result
-    st.write("Result:", round(output_value, 4), output_unit)
+    # Display the result in a box
+    st.write("**Result:**")
+    st.success(str(round(output_value, 4)) + " " + output_unit)
