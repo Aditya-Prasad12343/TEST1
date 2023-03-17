@@ -1,82 +1,74 @@
 import streamlit as st
-import PyPDF2
-import docx
-import io
 
-# Function to extract text from a PDF file
-def extract_pdf(file):
-    reader = PyPDF2.PdfReader(file)
-    text = ''
-    for page in reader.pages:
-        text += page.extract_text()
-    return text
+# Conversion factors for length
+length_conversion_factors = {
+    "inches to centimeters": 2.540,
+    "millimeters to inches": 0.03937,
+    "feet to centimeters": 30.4878,
+    "centimeters to inches": 0.3937,
+    "yards to meters": 0.9144028,
+    "meters to feet": 3.281,
+    "miles to kilometers": 1.6093419,
+    "kilometers to miles": 0.621372
+}
 
-# Function to extract text from a Word document
-def extract_docx(file):
-    doc = docx.Document(file)
-    text = ''
-    for paragraph in doc.paragraphs:
-        text += paragraph.text + '\n'
-    return text
+# Conversion factors for area
+area_conversion_factors = {
+    "square inches to square centimeters": 6.4516,
+    "square centimeters to square inches": 0.1550,
+    "square feet to square meters": 0.0929,
+    "square meters to square yards": 1.195986,
+    "square yards to square meters": 0.83613,
+    "square kilometers to square miles": 0.386101,
+    "square miles to square kilometers": 2.589999,
+    "hectares to acres": 2.471044,
+    "acres to hectares": 0.404687
+}
 
-# Function to convert the extracted text to LaTeX format
-def to_latex(text):
-    # Replace special characters with LaTeX equivalents
-    text = text.replace('&', '\\&')
-    text = text.replace('%', '\\%')
-    text = text.replace('$', '\\$')
-    text = text.replace('#', '\\#')
-    text = text.replace('_', '\\_')
-    text = text.replace('{', '\\{')
-    text = text.replace('}', '\\}')
-    text = text.replace('~', '\\textasciitilde{}')
-    text = text.replace('^', '\\textasciicircum{}')
+# Conversion factors for mass
+mass_conversion_factors = {
+    "grains to ounces": 0.00208,
+    "ounces to grams": 28.3495,
+    "grams to ounces": 0.03527396,
+    "pounds to kilograms": 0.4535924,
+    "kilograms to pounds": 2.2046223,
+    "short tons to metric tons": 0.892857,
+    "metric tons to short tons": 1.1200,
+    "long tons to metric tons": 1.01605
+}
 
-    # Replace line breaks with LaTeX newline characters
-    text = text.replace('\n', '\\\\')
+# Conversion factors for volume
+volume_conversion_factors = {
+    "teaspoons to milliliters": 5,
+    "milliliters to fluid ounces": 0.0338147,
+    "tablespoons to milliliters": 15,
+    "liters to pints": 2.11342,
+    "fluid ounces to milliliters": 30,
+    "liters to quarts": 1.05671,
+    "gallons to liters": 3.785332,
+    "cups to liters": 0.23658,
+    "pints to liters": 0.473167,
+    "cubic meters to cubic feet": 35.3144,
+    "cubic feet to cubic meters": 0.0283170,
+    "cubic yards to cubic meters": 0.764559
+}
 
-    # Wrap text in LaTeX document tags
-    latex = '\\documentclass{article}\n\\begin{document}\n'
-    latex += text
-    latex += '\n\\end{document}\n'
+# Display the conversion options and allow the user to select a conversion type
+conversion_type = st.sidebar.selectbox("Select a conversion type", ["length", "area", "mass", "volume"])
 
-    return latex
+if conversion_type == "length":
+    conversion_factors = length_conversion_factors
+elif conversion_type == "area":
+    conversion_factors = area_conversion_factors
+elif conversion_type == "mass":
+    conversion_factors = mass_conversion_factors
+elif conversion_type == "volume":
+    conversion_factors = volume_conversion_factors
 
-# Streamlit app
-def app():
-    st.title('PDF/Word to LaTeX Converter')
+# Allow the user to enter a value to convert
+input_value = st.sidebar.number_input("Enter a value to convert", value=0.0, step=0.1
+# Perform the conversion
+output_value = input_value * (conversion_factors[input_unit] / conversion_factors[output_unit])
 
-    # File upload widget
-    file = st.file_uploader('Upload a PDF or DOCX file:', type=['pdf', 'docx'])
-
-    # Convert file on button press
-    if st.button('Convert'):
-        if file is not None:
-            # Get file contents
-            file_contents = file.read()
-
-            # Extract text from file
-            file_type = file.name.split('.')[-1].lower()
-            if file_type == 'pdf':
-                text = extract_pdf(io.BytesIO(file_contents))
-            elif file_type == 'docx':
-                text = extract_docx(io.BytesIO(file_contents))
-            else:
-                st.error('Unsupported file type. Please upload a PDF or DOCX file.')
-
-            # Convert text to LaTeX format
-            latex = to_latex(text)
-
-             # Display LaTeX code
-            st.code(latex, language='latex')
-
-            # Export LaTeX file
-            download_button_str = 'Download LaTeX file'
-            b64 = io.BytesIO(latex.encode())
-            st.download_button(download_button_str, b64, f'{file.name.split(".")[0]}.tex', 'text/plain')
-        else:
-            st.error('Please upload a file.')
-            
-
-if __name__ == '__main__':
-    app()
+# Display the result
+st.write("Result:", round(output_value, 4), output_unit)
