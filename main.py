@@ -1,56 +1,55 @@
 import streamlit as st
 
-# Conversion factors for length
+# Define the conversion factors for length, area, mass, and volume
 length_conversion_factors = {
-    "inches to centimeters": 2.540,
-    "millimeters to inches": 0.03937,
-    "feet to centimeters": 30.4878,
-    "centimeters to inches": 0.3937,
-    "yards to meters": 0.9144028,
-    "meters to feet": 3.281,
-    "miles to kilometers": 1.6093419,
-    "kilometers to miles": 0.621372
+    "inch": 2.54,
+    "cm": 1,
+    "mm": 0.1,
+    "foot": 30.48,
+    "yard": 91.44,
+    "meter": 100,
+    "mile": 160934,
+    "km": 100000,
 }
 
-# Conversion factors for area
 area_conversion_factors = {
-    "square inches to square centimeters": 6.4516,
-    "square centimeters to square inches": 0.1550,
-    "square feet to square meters": 0.0929,
-    "square meters to square yards": 1.195986,
-    "square yards to square meters": 0.83613,
-    "square kilometers to square miles": 0.386101,
-    "square miles to square kilometers": 2.589999,
-    "hectares to acres": 2.471044,
-    "acres to hectares": 0.404687
+    "sq. inch": 6.4516,
+    "sq. cm": 1,
+    "sq. foot": 0.0929,
+    "sq. meter": 1,
+    "sq. yard": 0.83613,
+    "sq. mile": 2589990,
+    "sq. km": 1000000,
+    "hectare": 10000,
+    "acre": 4046.86,
 }
 
-# Conversion factors for mass
 mass_conversion_factors = {
-    "grains to ounces": 0.00208,
-    "ounces to grams": 28.3495,
-    "grams to ounces": 0.03527396,
-    "pounds to kilograms": 0.4535924,
-    "kilograms to pounds": 2.2046223,
-    "short tons to metric tons": 0.892857,
-    "metric tons to short tons": 1.1200,
-    "long tons to metric tons": 1.01605
+    "grain": 0.06479891,
+    "scruple": 1.2959782,
+    "dram": 3.8879346,
+    "ounce": 28.349523,
+    "gram": 1,
+    "pound": 453.59237,
+    "kilogram": 1000,
+    "short ton": 907184.74,
+    "metric ton": 1000000,
+    "long ton": 1016046.91,
 }
 
-# Conversion factors for volume
 volume_conversion_factors = {
-    "teaspoons to milliliters": 5,
-    "milliliters to fluid ounces": 0.0338147,
-    "tablespoons to milliliters": 15,
-    "liters to pints": 2.11342,
-    "fluid ounces to milliliters": 30,
-    "liters to quarts": 1.05671,
-    "gallons to liters": 3.785332,
-    "cups to liters": 0.23658,
-    "pints to liters": 0.473167,
-    "cubic meters to cubic feet": 35.3144,
-    "cubic feet to cubic meters": 0.0283170,
-    "cubic yards to cubic meters": 0.764559
+    "teaspoon": 5,
+    "milliliter": 1,
+    "tablespoon": 15,
+    "liter": 1000,
+    "fluid ounce": 29.5735,
+    "quart": 946.353,
+    "gallon": 3785.41,
+    "cup": 236.588,
+    "pint": 473.176,
+    "cubic meter": 1000000,
+    "cubic foot": 28316.846,
+    "cubic yard": 764554.858,
 }
 
 # Display the conversion options and allow the user to select a conversion type
@@ -66,9 +65,15 @@ elif conversion_type == "volume":
     conversion_factors = volume_conversion_factors
 
 # Allow the user to enter a value to convert
-input_value = st.sidebar.number_input("Enter a value to convert", value=0.0, step=0.1
-# Perform the conversion
-output_value = input_value * (conversion_factors[input_unit] / conversion_factors[output_unit])
+input_value = st.sidebar.number_input("Enter a value to convert", value=0.0, step=0.1)
 
-# Display the result
-st.write("Result:", round(output_value, 4), output_unit)
+# Complete the code for the conversion calculation and output
+if input_value:
+    input_unit = st.sidebar.selectbox("Select the input unit", list(conversion_factors.keys()))
+    output_unit = st.sidebar.selectbox("Select the output unit", list(conversion_factors.keys()))
+
+    # Perform the conversion
+    output_value = input_value * (conversion_factors[input_unit] / conversion_factors[output_unit])
+
+    # Display the result
+    st.write("Result:", round(output_value, 4), output_unit)
